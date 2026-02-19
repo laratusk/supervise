@@ -1,6 +1,6 @@
 {
     "name": "laratusk/supervise",
-    "description": "Manage Linux Supervisor configuration files using Laravel config + Blade templates",
+    "description": "Manage Linux Supervisor configuration files using Laravel config",
     "keywords": [
         "laravel",
         "supervisor",
