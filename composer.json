@@ -1,0 +1,69 @@
+{
+    "name": "laratusk/supervise",
+    "description": "Manage Linux Supervisor configuration files using Laravel config + Blade templates",
+    "keywords": [
+        "laravel",
+        "supervisor",
+        "queue",
+        "horizon",
+        "process"
+    ],
+    "homepage": "https://github.com/laratusk/supervise",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Laratusk",
+            "email": "hello@laratusk.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/console": "^10.0|^11.0|^12.0",
+        "illuminate/support": "^10.0|^11.0|^12.0",
+        "spatie/laravel-package-tools": "^1.16"
+    },
+    "require-dev": {
+        "larastan/larastan": "^2.9|^3.0",
+        "laravel/pint": "^1.18",
+        "orchestra/testbench": "^8.0|^9.0|^10.0",
+        "pestphp/pest": "^2.0|^3.0",
+        "pestphp/pest-plugin-laravel": "^2.0|^3.0",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan": "^1.12",
+        "rector/rector": "^1.0|^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Laratusk\\Supervise\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Laratusk\\Supervise\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Laratusk\\Supervise\\SuperviseServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage --min=90",
+        "analyse": "vendor/bin/phpstan analyse",
+        "format": "vendor/bin/pint",
+        "refactor": "vendor/bin/rector"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
