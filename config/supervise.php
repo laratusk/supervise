@@ -86,43 +86,28 @@ return [
     | Workers
     |--------------------------------------------------------------------------
     |
-    | Define your Supervisor workers here. Each worker must have a 'type' key.
-    | Supported types: 'horizon', 'queue', 'reverb'.
+    | Define your Supervisor workers here. Each worker must have a 'command' key
+    | (the exact command line to run). Worker name is the array key.
+    | You can override any key from 'defaults' above per worker.
     |
-    | Workers can override any key from 'defaults' above.
-    |
-    | Queue-specific options:
-    |   connection  - Queue connection name (defaults to config('queue.default'))
-    |   queue       - Array of queue names (required for queue type)
-    |   tries       - Max job attempts (default: 3)
-    |   max_time    - Max seconds a worker should run (default: 3600)
-    |   sleep       - Seconds to sleep when no jobs (default: 3)
-    |   timeout     - Seconds before a job is forcefully killed (default: 60)
-    |   memory      - Memory limit in MB
-    |   backoff     - Seconds to wait before retrying a failed job
-    |   max_jobs    - Max jobs before stopping the worker
-    |   force       - Force worker to run even in maintenance mode
-    |   rest        - Seconds to rest between jobs
-    |   log         - Set stdout_logfile to storage/logs/supervisor/{name}.log
+    | Optional: set 'log' => true to use storage/logs/supervisor/{name}.log
+    | for stdout_logfile.
     |
     */
     'workers' => [
 
         'horizon' => [
-            'type' => 'horizon',
+            'command' => 'php artisan horizon',
         ],
 
         'default-queue' => [
-            'type' => 'queue',
-            'connection' => 'redis',
-            'queue' => ['default'],
+            'command' => 'php artisan queue:work redis --queue=default --tries=3',
             'numprocs' => 3,
-            'tries' => 3,
         ],
 
-        // Uncomment to enable Laravel Reverb WebSocket server
+        // Example: Laravel Reverb WebSocket server
         // 'reverb' => [
-        //     'type' => 'reverb',
+        //     'command' => 'php artisan reverb:start',
         // ],
 
     ],

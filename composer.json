@@ -60,7 +60,7 @@
     "scripts": {
         "test": "vendor/bin/pest",
         "test-coverage": "vendor/bin/pest --coverage --min=90",
-        "analyse": "vendor/bin/phpstan analyse",
+        "analyse": "vendor/bin/phpstan analyse --memory-limit=512M",
         "format": "vendor/bin/pint",
         "refactor": "vendor/bin/rector"
     },

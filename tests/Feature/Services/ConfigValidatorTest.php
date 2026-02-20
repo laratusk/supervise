@@ -5,37 +5,25 @@ declare(strict_types=1);
 use Laratusk\Supervise\Exceptions\ValidationException;
 use Laratusk\Supervise\Services\ConfigValidator;
 
-it('passes a valid horizon config', function (): void {
+it('passes a valid worker config with command', function (): void {
     $validator = new ConfigValidator;
 
     expect(fn () => $validator->validate([
         'workers' => [
-            'horizon' => ['type' => 'horizon'],
+            'horizon' => ['command' => 'php artisan horizon'],
         ],
         'groups' => [],
     ]))->not->toThrow(ValidationException::class);
 });
 
-it('passes a valid queue config', function (): void {
+it('passes a valid worker with command and options', function (): void {
     $validator = new ConfigValidator;
 
     expect(fn () => $validator->validate([
         'workers' => [
             'emails' => [
-                'type' => 'queue',
-                'queue' => ['emails', 'notifications'],
+                'command' => 'php artisan queue:work redis --queue=emails,notifications',
             ],
-        ],
-        'groups' => [],
-    ]))->not->toThrow(ValidationException::class);
-});
-
-it('passes a valid reverb config', function (): void {
-    $validator = new ConfigValidator;
-
-    expect(fn () => $validator->validate([
-        'workers' => [
-            'reverb' => ['type' => 'reverb'],
         ],
         'groups' => [],
     ]))->not->toThrow(ValidationException::class);
@@ -58,48 +46,12 @@ it('throws when workers key is missing', function (): void {
     ]))->toThrow(ValidationException::class);
 });
 
-it('throws when worker type is invalid', function (): void {
-    $validator = new ConfigValidator;
-
-    expect(fn () => $validator->validate([
-        'workers' => [
-            'bad' => ['type' => 'invalid-type'],
-        ],
-        'groups' => [],
-    ]))->toThrow(ValidationException::class);
-});
-
-it('throws when worker type is missing', function (): void {
+it('throws when worker command is missing', function (): void {
     $validator = new ConfigValidator;
 
     expect(fn () => $validator->validate([
         'workers' => [
             'bad' => [],
-        ],
-        'groups' => [],
-    ]))->toThrow(ValidationException::class);
-});
-
-it('throws when queue worker is missing queue key', function (): void {
-    $validator = new ConfigValidator;
-
-    expect(fn () => $validator->validate([
-        'workers' => [
-            'emails' => ['type' => 'queue'],
-        ],
-        'groups' => [],
-    ]))->toThrow(ValidationException::class);
-});
-
-it('throws when queue array is empty', function (): void {
-    $validator = new ConfigValidator;
-
-    expect(fn () => $validator->validate([
-        'workers' => [
-            'emails' => [
-                'type' => 'queue',
-                'queue' => [],
-            ],
         ],
         'groups' => [],
     ]))->toThrow(ValidationException::class);
@@ -111,7 +63,7 @@ it('throws when numprocs is zero', function (): void {
     expect(fn () => $validator->validate([
         'workers' => [
             'horizon' => [
-                'type' => 'horizon',
+                'command' => 'php artisan horizon',
                 'numprocs' => 0,
             ],
         ],
@@ -125,7 +77,7 @@ it('throws when numprocs is negative', function (): void {
     expect(fn () => $validator->validate([
         'workers' => [
             'horizon' => [
-                'type' => 'horizon',
+                'command' => 'php artisan horizon',
                 'numprocs' => -1,
             ],
         ],
@@ -133,57 +85,12 @@ it('throws when numprocs is negative', function (): void {
     ]))->toThrow(ValidationException::class);
 });
 
-it('throws when tries is zero', function (): void {
-    $validator = new ConfigValidator;
-
-    expect(fn () => $validator->validate([
-        'workers' => [
-            'emails' => [
-                'type' => 'queue',
-                'queue' => ['default'],
-                'tries' => 0,
-            ],
-        ],
-        'groups' => [],
-    ]))->toThrow(ValidationException::class);
-});
-
-it('throws when max_time is zero', function (): void {
-    $validator = new ConfigValidator;
-
-    expect(fn () => $validator->validate([
-        'workers' => [
-            'emails' => [
-                'type' => 'queue',
-                'queue' => ['default'],
-                'max_time' => 0,
-            ],
-        ],
-        'groups' => [],
-    ]))->toThrow(ValidationException::class);
-});
-
-it('passes when sleep is zero', function (): void {
-    $validator = new ConfigValidator;
-
-    expect(fn () => $validator->validate([
-        'workers' => [
-            'emails' => [
-                'type' => 'queue',
-                'queue' => ['default'],
-                'sleep' => 0,
-            ],
-        ],
-        'groups' => [],
-    ]))->not->toThrow(ValidationException::class);
-});
-
 it('throws when group references a non-existent worker', function (): void {
     $validator = new ConfigValidator;
 
     expect(fn () => $validator->validate([
         'workers' => [
-            'horizon' => ['type' => 'horizon'],
+            'horizon' => ['command' => 'php artisan horizon'],
         ],
         'groups' => [
             'my-group' => ['non-existent-worker'],
@@ -196,8 +103,8 @@ it('passes when group references valid workers', function (): void {
 
     expect(fn () => $validator->validate([
         'workers' => [
-            'horizon' => ['type' => 'horizon'],
-            'emails' => ['type' => 'queue', 'queue' => ['emails']],
+            'horizon' => ['command' => 'php artisan horizon'],
+            'emails' => ['command' => 'php artisan queue:work --queue=emails'],
         ],
         'groups' => [
             'all' => ['horizon', 'emails'],

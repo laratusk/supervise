@@ -13,13 +13,13 @@ afterEach(function (): void {
     $this->removeDir($this->tmpDir);
 });
 
-it('compiles horizon worker and creates conf file', function (): void {
+it('compiles worker and creates conf file', function (): void {
     Config::set('supervise', [
         'conf_path' => '/etc/supervisor/conf.d',
         'output_path' => $this->tmpDir,
         'defaults' => $this->defaultDirectives(),
         'workers' => [
-            'horizon' => ['type' => 'horizon'],
+            'horizon' => ['command' => 'php artisan horizon'],
         ],
         'groups' => [],
     ]);
@@ -32,15 +32,14 @@ it('compiles horizon worker and creates conf file', function (): void {
     expect(file_exists($this->tmpDir.'/horizon.conf'))->toBeTrue();
 });
 
-it('compiles queue worker and creates conf file', function (): void {
+it('compiles worker with custom command and creates conf file', function (): void {
     Config::set('supervise', [
         'conf_path' => '/etc/supervisor/conf.d',
         'output_path' => $this->tmpDir,
         'defaults' => $this->defaultDirectives(),
         'workers' => [
             'emails' => [
-                'type' => 'queue',
-                'queue' => ['emails'],
+                'command' => 'php artisan queue:work --queue=emails',
             ],
         ],
         'groups' => [],
@@ -62,7 +61,7 @@ it('compiles reverb worker and creates conf file', function (): void {
         'output_path' => $this->tmpDir,
         'defaults' => $this->defaultDirectives(),
         'workers' => [
-            'reverb' => ['type' => 'reverb'],
+            'reverb' => ['command' => 'php artisan reverb:start'],
         ],
         'groups' => [],
     ]);
@@ -78,7 +77,7 @@ it('compiles group config files', function (): void {
         'output_path' => $this->tmpDir,
         'defaults' => $this->defaultDirectives(),
         'workers' => [
-            'horizon' => ['type' => 'horizon'],
+            'horizon' => ['command' => 'php artisan horizon'],
         ],
         'groups' => [
             'laravel' => ['horizon'],
@@ -102,7 +101,7 @@ it('automatically creates output directory', function (): void {
         'output_path' => $newDir,
         'defaults' => $this->defaultDirectives(),
         'workers' => [
-            'horizon' => ['type' => 'horizon'],
+            'horizon' => ['command' => 'php artisan horizon'],
         ],
         'groups' => [],
     ]);
@@ -119,7 +118,7 @@ it('is idempotent and overwrites existing files', function (): void {
         'output_path' => $this->tmpDir,
         'defaults' => $this->defaultDirectives(),
         'workers' => [
-            'horizon' => ['type' => 'horizon'],
+            'horizon' => ['command' => 'php artisan horizon'],
         ],
         'groups' => [],
     ]);
@@ -146,13 +145,13 @@ it('shows validation errors when config is invalid', function (): void {
     $this->artisan('supervise:compile')->assertExitCode(1);
 });
 
-it('shows validation error for missing queue key', function (): void {
+it('shows validation error for missing command', function (): void {
     Config::set('supervise', [
         'conf_path' => '/etc/supervisor/conf.d',
         'output_path' => $this->tmpDir,
         'defaults' => $this->defaultDirectives(),
         'workers' => [
-            'emails' => ['type' => 'queue'],
+            'emails' => [],
         ],
         'groups' => [],
     ]);
@@ -172,7 +171,7 @@ it('runs supervisorctl when --reload flag is set', function (): void {
         'output_path' => $this->tmpDir,
         'defaults' => $this->defaultDirectives(),
         'workers' => [
-            'horizon' => ['type' => 'horizon'],
+            'horizon' => ['command' => 'php artisan horizon'],
         ],
         'groups' => [],
     ]);
@@ -195,7 +194,7 @@ it('merges worker config with defaults', function (): void {
         'defaults' => $defaults,
         'workers' => [
             'horizon' => [
-                'type' => 'horizon',
+                'command' => 'php artisan horizon',
                 'numprocs' => 2,
             ],
         ],
