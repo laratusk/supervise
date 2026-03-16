@@ -38,7 +38,7 @@ jobs:
     strategy:
       matrix:
         php: ['8.2', '8.3', '8.4']
-        laravel: ['10.*', '11.*', '12.*']
+        laravel: ['10.*', '11.*', '12.*', '13.*']
         exclude:
           - php: '8.4'
             laravel: '10.*'
@@ -54,7 +54,7 @@ jobs:
       - name: Install dependencies
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
-          if [[ "${{ matrix.laravel }}" == "12.*" ]]; then
+          if [[ "${{ matrix.laravel }}" == "12.*" || "${{ matrix.laravel }}" == "13.*" ]]; then
             composer require "phpstan/phpstan:^2.0" "larastan/larastan:^3.0" --no-interaction --no-update
           fi
           composer install --prefer-dist --no-interaction
