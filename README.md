@@ -26,7 +26,7 @@ So instead of editing `.conf` files on each server, you edit one PHP config, com
 ## Requirements
 
 - PHP 8.2+
-- Laravel 10, 11, or 12
+- Laravel 10, 11, 12, or 13
 - Supervisor installed on the server (for running the processes)
 
 ---
