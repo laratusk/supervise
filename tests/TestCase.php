@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Laratusk\Supervise\Tests;
 
+use Illuminate\Foundation\Application;
 use Laratusk\Supervise\SuperviseServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
     /**
-     * @param  \Illuminate\Foundation\Application  $app
+     * @param  Application  $app
      * @return list<class-string>
      */
     protected function getPackageProviders($app): array
