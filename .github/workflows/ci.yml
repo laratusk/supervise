@@ -56,9 +56,6 @@ jobs:
       - name: Install dependencies
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
-          if [[ "${{ matrix.laravel }}" == "12.*" || "${{ matrix.laravel }}" == "13.*" ]]; then
-            composer require "phpstan/phpstan:^2.0" "larastan/larastan:^3.0" --no-interaction --no-update
-          fi
           composer install --prefer-dist --no-interaction
 
       - name: Run Tests
